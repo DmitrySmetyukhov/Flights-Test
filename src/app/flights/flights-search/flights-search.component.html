@@ -1,0 +1,137 @@
+<div class="container">
+
+  <mat-card class="flights" [formGroup]="form">
+    <div class="spinner-block" *ngIf="pending">
+      <div class="spinner-block__overlay"></div>
+      <div class="spinner-block__spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <mat-card-header class="header">
+      <mat-card-title>
+        <mat-icon>flight</mat-icon>
+        Flights
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="content">
+
+      <div class="flights__row">
+        <mat-form-field appearance="fill">
+          <mat-label>Origin</mat-label>
+          <mat-select formControlName="origin">
+            <mat-option *ngFor="let city of cities$ | async" [value]="city.id">{{city.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Destination</mat-label>
+          <mat-select formControlName="destination">
+            <mat-option *ngFor="let city of cities$ | async" [value]="city.id">{{city.name}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+
+      <div class="flights__row">
+        <mat-form-field class="wide" appearance="fill">
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input  [rangePicker]="picker" [min]="minDate">
+            <input matStartDate formControlName="startDate" placeholder="Start date">
+            <input matEndDate formControlName="endDate" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+          <mat-error *ngIf="startDate.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+          <mat-error *ngIf="endDate.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="flights__row">
+        <mat-form-field appearance="fill">
+          <mat-label>Price from</mat-label>
+          <input type="number" matInput formControlName="priceFrom"/>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Price to</mat-label>
+          <input type="number" matInput formControlName="priceTo"/>
+        </mat-form-field>
+      </div>
+
+      <div class="flights__row">
+        <mat-checkbox id="direct-check" formControlName="direct">Direct</mat-checkbox>
+
+        <mat-form-field id="connections-field" *ngIf="!direct.value">
+          <mat-label>Connections</mat-label>
+          <mat-select formControlName="connections">
+            <mat-option *ngFor="let count of connectionsCount" [value]="count">{{count}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+
+    </mat-card-content>
+
+    <mat-card-actions class="footer">
+      <button id="submit-btn" mat-raised-button color="primary" (click)="search()" [disabled]="form.invalid">Search</button>
+    </mat-card-actions>
+
+  </mat-card>
+
+  <mat-card class="table-card">
+    <table mat-table
+           [dataSource]="dataSource" multiTemplateDataRows matSort matSortDisableClear
+           class="mat-elevation-z8">
+      <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+        <ng-container *ngIf="!sortingColumns.includes(column); else sortable">
+          <th mat-header-cell *matHeaderCellDef> {{column.toUpperCase()}} </th>
+        </ng-container>
+        <ng-template #sortable>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column.toUpperCase()}}</th>
+        </ng-template>
+        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div class="element-detail"
+               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+            <div class="element-description">
+                <ng-container *ngIf="!element.parts; else parts">
+                  <strong>{{element.origin}}</strong>
+                  <mat-icon>arrow_forward</mat-icon>
+                  <strong>{{element.destination}}</strong>
+                </ng-container>
+
+                <ng-template #parts>
+                  <ng-container *ngFor="let part of element.parts">
+                    <strong>{{part.origin}}</strong>
+
+                                      <mat-icon>arrow_forward</mat-icon>
+
+                    <strong>{{part.destination}}</strong>
+                  </ng-container>
+                </ng-template>
+              Price: {{element.price | currency}}
+              Departure: {{element.date | date:'full'}}
+              Duration: {{element.length}}h
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let element; columns: displayedColumns;"
+          class="element-row"
+          [class.expanded-row]="expandedElement === element"
+          (click)="expandedElement = expandedElement === element ? null : element">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+    </table>
+  </mat-card>
+
+</div>
+

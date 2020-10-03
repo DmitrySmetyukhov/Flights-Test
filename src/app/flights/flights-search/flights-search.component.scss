@@ -1,0 +1,160 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100%;
+  background-image: url('../../../assets/images/flights.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.flights {
+  max-width: 600px;
+  margin: 15vh 20px 0 20px;
+
+  mat-form-field {
+    width: 45%;
+
+    &.wide {
+      width: 100%;
+    }
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 58px;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    width: 40%;
+  }
+}
+
+.spinner-block {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  z-index: 1;
+
+  &__overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.2;
+  }
+}
+
+.table-card {
+  width: 90%;
+  margin-top: 40px;
+}
+
+table {
+  width: 100%;
+
+  tr.detail-row {
+    height: 0;
+  }
+
+  tr.element-row:not(.expanded-row):hover {
+    background: whitesmoke;
+  }
+
+  tr.element-row:not(.expanded-row):active {
+    background: #efefef;
+  }
+
+  .element-row td {
+    border-bottom-width: 0;
+  }
+
+  .element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+
+  .element-diagram {
+    min-width: 80px;
+    border: 2px solid black;
+    padding: 8px;
+    font-weight: lighter;
+    margin: 8px 0;
+  }
+
+  .element-direction {
+    display: flex;
+    align-items: center;
+  }
+
+  .element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+  }
+
+  .element-description {
+    padding-bottom: 10px;
+    text-align: left;
+
+    strong:nth-child(3n) {
+      margin-right: 5px;
+    }
+
+    mat-icon {
+      font-size: 14px;
+      height: 14px;
+      width: 14px;
+    }
+  }
+
+  .element-description-attribution {
+    opacity: 0.5;
+  }
+
+  .mat-row {
+    cursor: pointer;
+  }
+
+  .mat-cell, .mat-header-cell {
+    text-align: center;
+  }
+
+  ::ng-deep .mat-sort-header-container {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .flights {
+    margin-top: 5vh;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    &__row {
+      display: block;
+    }
+  }
+
+  .footer {
+    button {
+      width: 100%;
+    }
+  }
+}
